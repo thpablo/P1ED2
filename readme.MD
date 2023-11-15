@@ -8,9 +8,11 @@
 
 Necessita de três argumentos para execução do arquivo:
 
-```./exe TipoDeArquivo Chave QuerConstruirArvore```
+```./exe MetodoPesquisa QuantidadeLer TipoDeArquivo Chave```
 
 em que:
+- MetodoPesquisa: Metodo que sera pesquisado a chave, neste caso insira qualquer valor, pois ira sempre pesquisar com Arvore binaria.
+- QuantidadeLer: Quantidade de dados que lerá do arquivo de origem (certifique que a quantidade é menor que do tamanho de arquivo de origem).
 - TipoDeArquivo: Tipo de Ordenacao desejada:
     1. Arquivo ordenado Crescente
     2. Arquivo ordenado Decrescente
