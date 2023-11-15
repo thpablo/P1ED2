@@ -24,7 +24,8 @@ int main(int argc, char const *argv[])
     }
 
     /* Cria arvore Binaria, caso queira */
-    if(atoi(argv[3])){ wantToCreateThree(fileOrigin, fileBinThree, atoi(argv[1])); }
+    /* !!MUDAR 1 para argv[3] -  Nao esta funcionando */  
+    if(1){ wantToCreateThree(fileOrigin, fileBinThree, atoi(argv[1])); }
 
     /* Pesquisa da chave */
     search(fileBinThree, atoi(argv[2]));
