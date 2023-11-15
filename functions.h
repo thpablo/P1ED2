@@ -1,6 +1,5 @@
 #ifndef FUNCTIONS
 #define FUNCTIONS
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "./reg.h"
@@ -14,10 +13,10 @@
 
 void showOriginFile(char nameFile[]);
 void showBinThreeFile(FILE *arq);
-int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating);
-int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition);
+int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating, int *countExternToInternSearch, int *countComparassion);
+int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition, int size);
 void setNameOriginFile(int type, char* nameFile);
-void wantToCreateThree(FILE* fileOrigin, FILE* fileBinThree, int type);
+void wantToCreateThree(FILE* fileOrigin, FILE* fileBinThree, int type, int size);
 void search(FILE *file, int key);
 
 #endif // FUNCTIONS

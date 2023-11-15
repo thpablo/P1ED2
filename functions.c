@@ -26,51 +26,62 @@ void showBinThreeFile(FILE *arq) {
 ** levelNodeInOriginFile: Ultimo nivel que esta sendo inserido na arvore a cada leitura do arquivo origem.
 ** isCreating: Indica se esta criando ou somente pesquisando
 */
-int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating){
+int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating, int *countExternToIntern, int *countComparison){
     Node node;
     /* Atualiza ponteiro para o No onde sera comparado a chave */
     fseek(fileBinThree, levelCurrentNode * sizeof(node), SEEK_SET);
     /* Leitura do No naquele nivel */
     fread(&node, sizeof(node), 1, fileBinThree);
+    *countExternToIntern += 1;
 
     /* Chave maior */
     if(key > node.reg.key){
         /* No filho para direita */
+        *countComparison += 1;
         if(node.dir == -1){
             if(isCreating){
                 node.dir = levelNodeInOriginFile;
                 fseek(fileBinThree, levelCurrentNode * sizeof(node), SEEK_SET);
                 fwrite(&node, sizeof(node), 1, fileBinThree);
             }
+            *countComparison += 1;
             return -1;
         }
-        return searchInBinThree(fileBinThree, key, node.dir, levelNodeInOriginFile, isCreating);
+        return searchInBinThree(fileBinThree, key, node.dir, levelNodeInOriginFile, isCreating, countExternToIntern, countComparison);
     }
 
     /* Chave menor */
     if(key < node.reg.key){
         /* No filho para esquerda */
+        *countComparison += 1;
         if(node.esq == -1){
             if(isCreating){
                 node.esq = levelNodeInOriginFile;
                 fseek(fileBinThree, levelCurrentNode * sizeof(node), SEEK_SET);
                 fwrite(&node, sizeof(node), 1, fileBinThree);
             }
+            *countComparison += 1;
             return -1;
         }
-        return searchInBinThree(fileBinThree, key, node.esq, levelNodeInOriginFile, isCreating);
+        return searchInBinThree(fileBinThree, key, node.esq, levelNodeInOriginFile, isCreating, countExternToIntern, countComparison);
     }
     
     return levelCurrentNode;
 }
 /* Cria arquivo com arvore binaria */
-int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition){
+int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition, int size){
     Node nodes;
     // Ordem aleatoria-> countNodeLevel = 0
     int countNodeLevel = (condition == 3) ? 0 : 1;
-    
+    int countExternToInternSearch = 0;
+    int countExternToInternBuild = 0;
+    int countComparison = 0;
+    int count = 0;
     // Construcao Arvore
-    while(fread(&nodes.reg, sizeof(nodes.reg), 1, origin) == 1){
+    //mudar while para menor que tamanho exigido
+    while(count < size){
+        fread(&nodes.reg, sizeof(nodes.reg), 1, origin);
+        countExternToInternBuild++;
         nodes.dir = -1;
         nodes.esq = -1;
 
@@ -91,11 +102,12 @@ int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition){
             fseek(fileBinThree, countNodeLevel * sizeof(nodes), SEEK_SET);
             fwrite(&nodes, sizeof(nodes), 1, fileBinThree);
             rewind(fileBinThree);
-            searchInBinThree(fileBinThree, nodes.reg.key, 0, countNodeLevel, true);
+            searchInBinThree(fileBinThree, nodes.reg.key, 0, countNodeLevel, true, &countExternToInternSearch, &countComparison);
             break;
 
         }
         countNodeLevel++;
+        count++;
     }
     /* Caso condicao seja 1 ou 2
     ** Ultimo registro pesquisado sera no folha
@@ -107,6 +119,11 @@ int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition){
         fseek(fileBinThree, -1 * sizeof(nodes), 1);
         fwrite(&nodes, sizeof(nodes), 1, fileBinThree);
     }
+
+    printf("\nHouve %d comparacoes na construcao do arquivo", countComparison);
+    printf("\nHouve %d transferencias Externa -> Interna na pesquisa para construcao do arquivo", countExternToInternSearch);
+    printf("\nHouve %d transferencias Externa -> Interna na insercao do arquivo binario", countExternToInternBuild);
+    printf("\nTotal p/ construcao: %d", countExternToInternBuild + countExternToInternSearch);
     return 1;
 }
 /* Seta nome do arquivo de origem com base no tipo de ordenacao */
@@ -127,23 +144,27 @@ void setNameOriginFile(int type, char* nameFile){
     }
 }
 /* Funcao decide se quer criar arquivo novo */
-void wantToCreateThree(FILE* fileOrigin, FILE* fileBinThree, int type){
+void wantToCreateThree(FILE* fileOrigin, FILE* fileBinThree, int type, int size){
     clock_t start, end;
     start = clock();
 
     printf("Criando Arvore binaria... ");
-    if(buildFileBinThree(fileOrigin, fileBinThree, type))
+    if(buildFileBinThree(fileOrigin, fileBinThree, type, size))
         showBinThreeFile(fileBinThree);
     end = clock();
-    printf("\nFoi levado %lf para montar a árvore", (double)(end - start) / (double)(CLOCKS_PER_SEC));
+    printf("\nFoi levado %lfs para montar a árvore", (double)(end - start) / (double)(CLOCKS_PER_SEC));
 }
 
 /* Funcao chama pesquisa na arvore binaria */
 void search(FILE *file, int key){
     Node node;
+    clock_t start, end;
+    start = clock();
+    int countExternToInternSearch = 0;
+    int countComparison = 0;
     printf("\n--------------------------------------------------------");
     /* Funcao retorna posicao onde esta registro na arvore */
-    int pos = searchInBinThree(file, key, 0, 0, false);
+    int pos = searchInBinThree(file, key, 0, 0, false, &countExternToInternSearch, &countComparison);
     if(pos != -1){  
         fseek(file, pos * sizeof(node), SEEK_SET);
         printf("\nChave se encontra na linha: %d", pos);
@@ -151,5 +172,9 @@ void search(FILE *file, int key){
         printf("\nKey: [%d] - %ld | %s\nFilho a Direita: %d\nFilho a Esquerda: %d\n", node.reg.key, node.reg.data1, node.reg.data2, node.esq, node.dir);
     }
     else
-        printf("\nChave nao encontrada\n");
+        printf("\nChave nao encontrada");
+    printf("\nHouve %d comparacoes na pesquisa", countComparison);
+    end = clock();
+    printf("\nFoi levado %lfs para fazer a pesquisa.", (double)(end - start) / (double)(CLOCKS_PER_SEC));
+    printf("\nHouve %d transferencias Externa -> Interna na pesquisa da chave.", countExternToInternSearch);
 }
