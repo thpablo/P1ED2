@@ -77,8 +77,8 @@ int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition, int size)
     int countExternToInternBuild = 0;
     int countComparison = 0;
     int count = 0;
+    
     // Construcao Arvore
-    //mudar while para menor que tamanho exigido
     while(count < size){
         fread(&nodes.reg, sizeof(nodes.reg), 1, origin);
         countExternToInternBuild++;

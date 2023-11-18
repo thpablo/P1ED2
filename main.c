@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
         exit(1);
     }
 
-    /* Cria arquivo com arvore binaria */
+    /* Cria arquivo para a arvore binaria */
     FILE *fileBinThree = fopen("./bin/arvore_binaria.bin", "wb+");
     if(fileBinThree == NULL){
         perror("Erro ao criar arquivo da arvore binaria");

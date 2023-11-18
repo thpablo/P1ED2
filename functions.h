@@ -8,7 +8,7 @@
 #include <string.h>
 #define ALEATORIO "./bin/aleatorio.bin"
 #define CRESCENTE "./bin/crescente.bin"
-#define DECRESCENTE "./bin/crescente.bin"
+#define DECRESCENTE "./bin/decrescente.bin"
 #define TAM_MAX_NAME_FILE 21
 
 void showOriginFile(char nameFile[]);
