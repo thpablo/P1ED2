@@ -44,7 +44,6 @@ int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int leve
                 fseek(fileBinThree, levelCurrentNode * sizeof(node), SEEK_SET);
                 fwrite(&node, sizeof(node), 1, fileBinThree);
             }
-            *countComparison += 1;
             return -1;
         }
         return searchInBinThree(fileBinThree, key, node.dir, levelNodeInOriginFile, isCreating, countExternToIntern, countComparison);
@@ -60,7 +59,6 @@ int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int leve
                 fseek(fileBinThree, levelCurrentNode * sizeof(node), SEEK_SET);
                 fwrite(&node, sizeof(node), 1, fileBinThree);
             }
-            *countComparison += 1;
             return -1;
         }
         return searchInBinThree(fileBinThree, key, node.esq, levelNodeInOriginFile, isCreating, countExternToIntern, countComparison);
