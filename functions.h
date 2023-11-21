@@ -13,7 +13,7 @@
 
 void showOriginFile(char nameFile[]);
 void showBinThreeFile(FILE *arq);
-int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating, int *countExternToInternSearch, int *countComparassion);
+int searchInBinThree(FILE *fileBinThree, int key, int levelCurrentNode, int levelNodeInOriginFile, bool isCreating, int *countExternToIntern, int *countComparison, int *countInternToExtern);
 int buildFileBinThree(FILE* origin, FILE* fileBinThree, int condition, int size);
 void setNameOriginFile(int type, char* nameFile);
 void wantToCreateThree(FILE* fileOrigin, FILE* fileBinThree, int type, int size);
