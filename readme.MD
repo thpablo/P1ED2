@@ -1,4 +1,6 @@
 # Pesquisa em árvore binária
+## Sobre
+Trabalho realizado para a materia de Estrutura de Dados 2, para Universidade Federal de Ouro Preto. O algoritmo utiliza arquivos binários com uma estrutura padrão (Localizada no arquivo `reg.h`) para construção e pesquisa de uma árvore binária em memória secundária.
 
 ## Compilação
 
